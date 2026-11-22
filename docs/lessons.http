@@ -1,0 +1,70 @@
+@baseUrl = http://localhost:3000
+
+### 1. GET semua materi
+GET {{baseUrl}}/lessons
+
+### 2. GET satu materi
+GET {{baseUrl}}/lessons/solar-sun
+
+### 3. GET materi yang tidak ada (404)
+GET {{baseUrl}}/lessons/tidak-ada
+
+### 4. POST tambah materi (201)
+# @name tambah
+POST {{baseUrl}}/lessons
+Content-Type: application/json
+
+{
+  "title": "Gerhana Bulan",
+  "theme": "Fenomena Langit",
+  "description": "Saat Bumi berada di antara Matahari dan Bulan.",
+  "content": "Gerhana Bulan terjadi ketika bayangan Bumi menutupi Bulan.",
+  "funFact": "Saat gerhana total, Bulan bisa tampak kemerahan.",
+  "level": 1,
+  "published": true,
+  "publishedAt": "2026-11-20"
+}
+
+### 5. POST gagal validasi (400): judul terlalu pendek, tema tidak dikenal, level di luar batas
+POST {{baseUrl}}/lessons
+Content-Type: application/json
+
+{
+  "title": "ab",
+  "theme": "Dapur",
+  "description": "ok",
+  "level": 9
+}
+
+### 6. POST judul kembar (409)
+POST {{baseUrl}}/lessons
+Content-Type: application/json
+
+{
+  "title": "Matahari, Pusat Tata Surya",
+  "theme": "Tata Surya",
+  "description": "Judul ini sudah ada di data awal."
+}
+
+### 7. PATCH ubah materi (jalankan nomor 4 dulu)
+PATCH {{baseUrl}}/lessons/{{tambah.response.body.id}}
+Content-Type: application/json
+
+{
+  "description": "Deskripsi yang sudah diperbarui.",
+  "level": 2
+}
+
+### 8. PATCH gagal validasi (400)
+PATCH {{baseUrl}}/lessons/{{tambah.response.body.id}}
+Content-Type: application/json
+
+{
+  "level": "tinggi"
+}
+
+### 9. DELETE hapus materi (jalankan nomor 4 dulu)
+DELETE {{baseUrl}}/lessons/{{tambah.response.body.id}}
+
+### 10. DELETE lagi, sudah tidak ada (404)
+DELETE {{baseUrl}}/lessons/{{tambah.response.body.id}}
